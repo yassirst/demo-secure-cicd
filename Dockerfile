@@ -1,5 +1,5 @@
 # Pinned, minimal base image (never use ":latest" in a real pipeline)
-FROM python:3.12-slim
+FROM python:3.14-slim
 
 # Create a non-root user — never run the app as root in the container
 RUN addgroup --system app && adduser --system --ingroup app app
