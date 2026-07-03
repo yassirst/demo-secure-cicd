@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [main]
 
-# Least privilege by default — jobs that need more request it explicitly
+# Least privilege by default: jobs that need more request it explicitly
 permissions:
   contents: read
 
@@ -39,7 +39,7 @@ jobs:
       - name: Run unit tests
         run: pytest -v
 
-  # 2. SAST — static analysis of our own source code
+  # 2. SAST: static analysis of our own source code
   sast:
     name: Static Analysis (SAST)
     runs-on: ubuntu-latest
@@ -53,7 +53,7 @@ jobs:
         with:
           config: p/ci
 
-  # 3. SCA — are any of our dependencies known-vulnerable?
+  # 3. SCA: are any of our dependencies known-vulnerable?
   dependency-scan:
     name: Dependency Scan (SCA)
     runs-on: ubuntu-latest
@@ -72,7 +72,7 @@ jobs:
           pip install pip-audit
           pip-audit -r requirements.txt
 
-  # 4. Build the image, then scan IT (source code being clean isn't enough —
+  # 4. Build the image, then scan it (source code being clean isn't enough,
   #    the base image and OS packages need checking too)
   build-and-scan-image:
     name: Build & Scan Docker Image
@@ -85,15 +85,15 @@ jobs:
       - name: Build Docker image
         run: docker build -t ${{ env.IMAGE_NAME }}:${{ github.sha }} .
 
-     - name: Scan image with Trivy
+      - name: Scan image with Trivy
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ env.IMAGE_NAME }}:${{ github.sha }}
           severity: CRITICAL,HIGH
           exit-code: 1   # fail the pipeline if a critical/high CVE is found
-          trivyignores: .trivyignore # fail the pipeline if a critical/high CVE is found
+          trivyignores: .trivyignore   # CVE-2026-9538 accepted, see file for why
 
-  # 5. Deploy — only from main, only if every security gate above passed,
+  # 5. Deploy: only from main, only if every security gate above passed,
   #    and only into an environment that requires approval (see repo Settings > Environments)
   deploy:
     name: Deploy (staging)
@@ -108,5 +108,5 @@ jobs:
         #   - docker login using secrets.REGISTRY_USER / secrets.REGISTRY_TOKEN
         #   - docker push to the registry
         #   - trigger the actual deployment (kubectl, ssh, terraform apply...)
-        # Secrets are never hardcoded — they're injected from GitHub's encrypted
+        # Secrets are never hardcoded, they're injected from GitHub's encrypted
         # "Secrets" store via the secrets.* context, and only exposed to this job.
