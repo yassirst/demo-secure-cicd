@@ -15,8 +15,10 @@ demo-secure-cicd/
 ├── test_app.py                     # Tests unitaires
 ├── Dockerfile                      # Image conteneurisée, durcie
 ├── .dockerignore                   # Exclut les fichiers sensibles/inutiles du build
-└── .github/workflows/
-    └── secure-pipeline.yml         # Le pipeline CI/CD lui-même
+└── .github/
+    ├── dependabot.yml              # Mises à jour automatiques des dépendances (pip, Docker, Actions)
+    └── workflows/
+        └── secure-pipeline.yml     # Le pipeline CI/CD lui-même
 ```
 
 ## Architecture du pipeline
@@ -69,6 +71,7 @@ Push / Pull Request
 - **Pipeline qui échoue volontairement** (`exit-code: 1`) si Trivy détecte une faille critique/haute — la sécurité bloque le déploiement, elle n'est pas juste informative
 - **Secrets jamais en dur** : le déploiement utiliserait `secrets.*` (stockage chiffré GitHub), jamais une valeur écrite dans le YAML
 - **Déploiement conditionné à la branche `main`** et à un environnement protégé (`environment: staging`), qui peut exiger une approbation manuelle dans les paramètres du repo
+- **Dependabot** (`.github/dependabot.yml`) : ouvre automatiquement des PR de mise à jour pour les dépendances Python, l'image Docker de base et les Actions GitHub utilisées — complète le SCA ponctuel (pip-audit) par une veille continue
 
 ## Comment l'utiliser
 
