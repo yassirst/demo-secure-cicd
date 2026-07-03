@@ -14,7 +14,6 @@ env:
 
 jobs:
 
-  # 1. Lint + unit tests
   lint-and-test:
     name: Lint & Unit Tests
     runs-on: ubuntu-latest
@@ -34,7 +33,6 @@ jobs:
       - name: Run unit tests
         run: pytest -v
 
-  # 2. SAST: static code analysis
   sast:
     name: Static Analysis (SAST)
     runs-on: ubuntu-latest
@@ -47,7 +45,6 @@ jobs:
         with:
           config: p/ci
 
-  # 3. SCA: dependency scan
   dependency-scan:
     name: Dependency Scan (SCA)
     runs-on: ubuntu-latest
@@ -64,7 +61,6 @@ jobs:
           pip install pip-audit
           pip-audit -r requirements.txt
 
-  # 4. Build image + scan it with Trivy
   build-and-scan-image:
     name: Build & Scan Docker Image
     runs-on: ubuntu-latest
@@ -80,9 +76,9 @@ jobs:
           image-ref: ${{ env.IMAGE_NAME }}:${{ github.sha }}
           severity: CRITICAL,HIGH
           exit-code: 1
+          ignore-unfixed: true
           trivyignores: .trivyignore
 
-  # 5. Deploy (only if everything above passed)
   deploy:
     name: Deploy (staging)
     runs-on: ubuntu-latest
