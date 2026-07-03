@@ -1,5 +1,4 @@
-# CVE-2026-9538: Archive::Tar (Perl) memory exhaustion.
+# CVE-2026-9538: Archive Tar (Perl) memory exhaustion.
 # No fix available yet from Debian for this OS package (status: fix_deferred).
-# Risk accepted: this app doesn't use Perl or process tar archives, so the
-# vulnerable code path is unreachable. Revisit when Debian ships a fix.
+# Risk accepted: this app does not use Perl or process tar archives.
 CVE-2026-9538
